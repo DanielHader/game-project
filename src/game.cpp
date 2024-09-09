@@ -1,12 +1,20 @@
 #include "game.hpp"
 
+#include <string>
+#include <stdexcept>
 #include <iostream>
 #include <chrono>
 #include <ratio>
 
 Game::Game(const GameParams &params) {
-    SDL_Init(SDL_INIT_VIDEO);
     
+    SDL_Init(SDL_INIT_VIDEO);
+
+    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
+
     this->sdl_window = SDL_CreateWindow(
         params.window_title.c_str(),
         SDL_WINDOWPOS_UNDEFINED,
@@ -15,12 +23,37 @@ Game::Game(const GameParams &params) {
         params.window_height,
         SDL_WINDOW_OPENGL
     );
+
+    if (this->sdl_window == nullptr) {
+        std::string message = "Unable to create window: ";
+        message += SDL_GetError(); SDL_ClearError();
+
+        throw std::runtime_error(message);
+    }
+    
+    this->gl_context = SDL_GL_CreateContext(this->sdl_window);
+
+    if (this->gl_context == nullptr) {
+        std::string message = "Unable to create GL context: ";
+        message += SDL_GetError(); SDL_ClearError();
+
+        SDL_DestroyWindow(this->sdl_window);
+        
+        throw std::runtime_error(message);
+    }
+
+    
+    
+    glClearColor(0.2, 0.2, 0.2, 1.0);
+    glViewport(0, 0, params.window_width, params.window_height);
 }
 
 Game::~Game() {
-    if (this->sdl_window != nullptr) {
-        SDL_DestroyWindow(this->sdl_window);
-    }
+
+    if (this->gl_context != nullptr) { SDL_GL_DeleteContext(this->gl_context); }
+    if (this->sdl_window != nullptr) { SDL_DestroyWindow(this->sdl_window); }
+
+    SDL_Quit();
 }
 
 void Game::update() {
@@ -32,11 +65,15 @@ void Game::update() {
 }
 
 void Game::render() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    
 
+    SDL_GL_SwapWindow(this->sdl_window);
 }
 
 void Game::run() {
     this->running = true;
+    this->updates = 0;
 
     using std::chrono::steady_clock;
     using std::chrono::time_point;

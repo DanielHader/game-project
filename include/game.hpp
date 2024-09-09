@@ -17,6 +17,7 @@ struct GameParams {
 class Game {
 private:
     SDL_Window *sdl_window;
+    SDL_GLContext gl_context;
     
     bool running;
     unsigned int updates;

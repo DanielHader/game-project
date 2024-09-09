@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 set(PROJECT_NAME Game)
 
@@ -11,6 +11,7 @@ set(SOURCES
   src/input.cpp
   include/game.hpp
   include/input.hpp
+  include/math/vector.hpp
   )
 
 find_package(OpenGL REQUIRED COMPONENTS OpenGL)
