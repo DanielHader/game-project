@@ -9,10 +9,13 @@ set(SOURCES
   src/main.cpp 
   src/game.cpp
   src/input.cpp
+  src/math/affine_transform.cpp
   include/game.hpp
   include/input.hpp
-  include/math/vector.hpp
+  include/math/affine_transform.hpp
   )
+
+find_package(glm CONFIG REQUIRED)
 
 find_package(OpenGL REQUIRED COMPONENTS OpenGL)
 
@@ -26,4 +29,4 @@ find_package(OpenGL)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE include)
-target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES} ${GLEW_LIBRARIES} OpenGL::GL)
+target_link_libraries(${PROJECT_NAME} glm::glm ${SDL2_LIBRARIES} ${GLEW_LIBRARIES} OpenGL::GL)
