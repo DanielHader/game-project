@@ -8,16 +8,20 @@
 class AffineTransform {
 private:
     glm::vec3 translation;
-    glm::quat orientation;
+    glm::quat rotation;
 
 public:
     AffineTransform();
+    AffineTransform(glm::vec3, glm::quat);
     virtual ~AffineTransform();
     
     static AffineTransform identity();
     static AffineTransform from_matrix(const glm::mat4 &matrix);
+    static AffineTransform from_angle_axis_offset(float angle, glm::vec3 axis, glm::vec3 offset);
     
     glm::mat4 to_matrix() const;
+
+    glm::vec3 operator()(const glm::vec3 &vec) const;
 };
 
 #endif
