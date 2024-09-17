@@ -1,4 +1,8 @@
 #include "game.hpp"
+#include "graphics/shader.hpp"
+
+#include <fstream>
+#include <sstream>
 
 #include <string>
 #include <stdexcept>
@@ -42,7 +46,18 @@ Game::Game(const GameParams &params) {
         throw std::runtime_error(message);
     }
 
+    glewInit();
     
+    std::ifstream vs_if("../assets/shaders/test.vert");
+    std::stringstream vs_ss;
+    vs_ss << vs_if.rdbuf();
+
+    std::ifstream fs_if("../assets/shaders/test.frag");
+    std::stringstream fs_ss;
+    fs_ss << fs_if.rdbuf();
+
+    Shader vs(vs_ss.str(), ShaderType::Vertex);
+    Shader fs(fs_ss.str(), ShaderType::Fragment);
     
     glClearColor(0.2, 0.2, 0.2, 1.0);
     glViewport(0, 0, params.window_width, params.window_height);
@@ -59,9 +74,11 @@ Game::~Game() {
 void Game::update() {
     this->updates++;
 
+    /*
     if (this->updates % 60 == 0) {
         std::cout << this->updates << std::endl;
     }
+    */
 }
 
 void Game::render() {

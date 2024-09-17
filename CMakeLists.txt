@@ -10,8 +10,10 @@ set(SOURCES
   src/game.cpp
   src/input.cpp
   src/math/affine_transform.cpp
+  src/graphics/shader.cpp
   include/game.hpp
   include/input.hpp
+  include/graphics/shader.hpp
   include/math/affine_transform.hpp
   )
 
